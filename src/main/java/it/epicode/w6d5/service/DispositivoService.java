@@ -1,6 +1,8 @@
 package it.epicode.w6d5.service;
 
+import it.epicode.w6d5.DTO.AssignDispositivoDTO;
 import it.epicode.w6d5.DTO.DispositivoDTO;
+import it.epicode.w6d5.exception.BadRequestException;
 import it.epicode.w6d5.exception.NotFoundException;
 import it.epicode.w6d5.exception.WrongMatchException;
 import it.epicode.w6d5.model.Dipendente;
@@ -46,6 +48,15 @@ public class DispositivoService {
         Dispositivo dispositivo = getById(id);
         dispositivo.setStato(dispositivoDTO.getStato());
         dispositivo.setTipologia(dispositivoDTO.getTipologia());
+        dispositivo.setDipendente(dipendente);
+        return dispositivoRepository.save(dispositivo);
+    }
+
+    public Dispositivo assignToDipendente(int idDispositivo, AssignDispositivoDTO assignDispositivoDTO){
+        Dispositivo dispositivo = getById(idDispositivo);
+        if (dispositivo.getDipendente().getId() == assignDispositivoDTO.getIdDipendente()) throw new BadRequestException("Non puoi assegnare un dispositivo allo stesso dipendente a cui è già assegnato");
+        Dipendente dipendente = dipendenteService.getById(assignDispositivoDTO.getIdDipendente());
+        dispositivo.setStato(Stato.ASSEGNATO);
         dispositivo.setDipendente(dipendente);
         return dispositivoRepository.save(dispositivo);
     }

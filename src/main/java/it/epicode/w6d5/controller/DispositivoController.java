@@ -1,5 +1,6 @@
 package it.epicode.w6d5.controller;
 
+import it.epicode.w6d5.DTO.AssignDispositivoDTO;
 import it.epicode.w6d5.DTO.DispositivoDTO;
 import it.epicode.w6d5.exception.BadRequestException;
 import it.epicode.w6d5.exception.ErrorResponse;
@@ -38,6 +39,12 @@ public class DispositivoController {
     public CustomResponse update(@PathVariable int id, @RequestBody @Validated DispositivoDTO dispositivoDTO, BindingResult bindingResult){
         if (bindingResult.hasErrors()) throw new BadRequestException(ErrorResponse.handleValidationMessages(bindingResult));
         return new CustomResponse(HttpStatus.OK.toString(), dispositivoService.update(id, dispositivoDTO));
+    }
+
+    @PatchMapping("/dispositivi/{id}/assign")
+    public CustomResponse assignToDipendente(@PathVariable int id, @RequestBody @Validated AssignDispositivoDTO assignDispositivoDTO, BindingResult bindingResult){
+        if (bindingResult.hasErrors()) throw new BadRequestException(ErrorResponse.handleValidationMessages(bindingResult));
+        return new CustomResponse(HttpStatus.OK.toString(), dispositivoService.assignToDipendente(id, assignDispositivoDTO));
     }
 
     @DeleteMapping("/dispositivi/{id}")
